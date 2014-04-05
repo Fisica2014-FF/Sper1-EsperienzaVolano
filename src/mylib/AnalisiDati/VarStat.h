@@ -13,9 +13,12 @@
 //#include <iostream>
 #include <fstream>
 #include <sstream>
-#include "../utils/NomeDiFile.h"
-#include "../AnalisiDati/File_Fdat.h"
 
+#include <cassert>
+
+#include "../utils/NomeDiFile.h"
+#include "./File_Fdat.h"
+#include "./funzioni_libere.h" //Covarianza
 
 #ifdef _MIO_DEBUG_
 
@@ -38,7 +41,7 @@ using std::vector;
 
 ///////////////////////
 //					 //
-//	  VERSIONE 2.0	 //
+//	  VERSIONE 3.0	 //
 //					 //
 ///////////////////////
 
@@ -53,7 +56,7 @@ template <class T> const VarStat<T> operator*(const VarStat<T> , const long doub
 template <class T> const VarStat<T> potcombo(const VarStat<T>& , const long double , const VarStat<T>& , const long double );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//Versione
+//Versione base, per stampare rapidamente
 template <typename U>
 std::ostream& operator <<(std::ostream& os, const VarStat<U>& rhs) {
 	using namespace std;
@@ -120,12 +123,18 @@ public:
 		dMedia = (long double)valore;
 		//long double dDeviazioneStandardPopo = 0;
 		dErroreMedia = 0;
+
+		//Serve svuotarli?
 		if ( !errori.empty() )
 			errori.clear();// Svuota l'array degli errori
 		if ( !dati.empty() )
 			dati.clear();// Svuota l'array dei dati
 
-		//La derivata di un valore puro è traslato a una funzione costante
+		//Metti un dato solo com
+		dati.push_back(valore);
+		errori.push_back(0.0);
+
+		//La derivata di un valore puro è come quella di una funzione costante
 		derivata = 0;
 	}
 
@@ -142,6 +151,13 @@ public:
 			errori.clear();// Svuota l'array degli errori
 		if ( !dati.empty() )
 			dati.clear();// Svuota l'array dei dati
+
+		//Riempi i dati con copie del valore medio con errore
+		for (int i = 0; i < numDati; ++i) {
+			dati.push_back(valoreMedio);
+			errori.push_back(DevStdPop);
+		}
+
 
 		//La derivata di un valore solo ma con errore è una variabile x con derivata (d/dx)x = 1
 		derivata = 1;
@@ -187,6 +203,7 @@ public:
 			#ifdef _MIO_DEBUG_
 			std::clog << "Vettore vuoto, metto la variabile a zero+-zero";
 			#endif
+
 
 			iNumero_dati = 0;
 			dMedia = 0;
@@ -354,7 +371,11 @@ public:
 	inline long double getDerivata() const {return derivata;}
 	inline long double getEnnesimoDato(long i) const {return dati.at(i);}
 	inline long double getEnnesimoErrore(long i) const {return errori.at(i);}
-	inline long int    getNumeroDatiEffettivo() const {return iNumero_dati;}
+	inline long int    getNumeroDatiEffettivo() const {
+		//Controlla che iNumero_dati sia sempre coerente
+		assert(iNumero_dati == dati.size() and iNumero_dati == errori.size());
+		return iNumero_dati;
+	}
 	//Range della variabile
 
 	//Stampa dei valori
@@ -415,10 +436,12 @@ public:
 		//Derivata: derivata della somma è somma delle derivate
 		derivata = derivata + rhs.derivata;
 
-		//Errore un dato
-		iNumero_dati = 0;
-		dati.clear();
-		errori.clear();
+		// metti un dato solo, col suo errore
+		iNumero_dati = 1;
+		errori.clear();// Svuota l'array degli errori
+		dati.clear();// Svuota l'array dei dati
+		dati.push_back(dMedia);
+		errori.push_back(getDeviazioneStandardPop());
 
 
 		return *this;
@@ -450,10 +473,12 @@ public:
 		//Derivata: derivata del prodotto x*y è x'y + xy'
 		derivata = derivata * rhs.dMedia + tMedia * rhs.derivata;
 
-		//
+		// metti un dato solo, col suo errore
 		iNumero_dati = 1;
-		dati.clear();
-		errori.clear();
+		errori.clear();// Svuota l'array degli errori
+		dati.clear();// Svuota l'array dei dati
+		dati.push_back(dMedia);
+		errori.push_back(getDeviazioneStandardPop());
 
 		return *this;
 	}
@@ -470,10 +495,12 @@ public:
 		//Derivata: derivata della divisione x/y è (x'y - xy') / y^2
 		derivata = (derivata*rhs.dMedia - tMedia * rhs.derivata) / pow(rhs.dMedia,2);
 
-		//
-		iNumero_dati = nan("");
-		dati.clear();
-		errori.clear();
+		//metti un dato solo, col suo errore
+		iNumero_dati = 1;
+		errori.clear();// Svuota l'array degli errori
+		dati.clear();// Svuota l'array dei dati
+		dati.push_back(dMedia);
+		errori.push_back(getDeviazioneStandardPop());
 
 		return *this;
 	}

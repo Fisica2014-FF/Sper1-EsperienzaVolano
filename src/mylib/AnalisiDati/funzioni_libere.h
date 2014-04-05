@@ -15,12 +15,13 @@ namespace dataAnalisi {
 using std::vector;
 
 //Covarianza (non pesata, qualunque cosa voglia dire)
-long double covarianza (VarStat<long double>& v1, VarStat<long double>& v2) {
+template <class T>
+T covarianza (VarStat<T>& v1, VarStat<T>& v2) {
 
 	long long numeroDati = v1.getNumeroDatiEffettivo();
 	//TODO!! se le variabili varstat sono sintetiche??????
 	// Mmmhhhhh..........
-	if (v1.getNumeroDatiEffettivo()() != v2.getNumeroDatiEffettivo())
+	if (v1.getNumeroDatiEffettivo() != v2.getNumeroDatiEffettivo())
 		throw "[Errore]: Errore nella covarianza: insiemi di dati di cardinalità diversa";
 
 	long double cov = (v1.getEnnesimoDato(0) - v1.getMedia()) * (v2.getEnnesimoDato(0) - v2.getMedia());
@@ -28,7 +29,7 @@ long double covarianza (VarStat<long double>& v1, VarStat<long double>& v2) {
 		cov = i*(v1.getEnnesimoDato(i) - v1.getMedia()) * (v2.getEnnesimoDato(i) - v2.getMedia()) / (i+1);
 	}
 
-	return 3;
+	return cov;
 }
 
 }
