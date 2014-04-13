@@ -1,0 +1,117 @@
+
+Versione dello standard: 0.2
+Compatibile con (fin dalla): 0.1
+
+
+
+
+Sezione 0: note e convenzioni per questo documento
+
+|: la sbarra verticale indica varie possibilità alternative e mutualmente esclusive, ad es "token | numero" indica che ci può essere o un token o un numero
+
+%: indica un commento allo standard
+
+token	: un token indica un nome identificativo, una sequenza di caratteri alfanumerici (maiuscole,minuscole e cifre) e _ (underscore). 
+		  In particolare non può contenere spazi, nè punteggiatura al di fuori dell'underscore.
+		  
+""		: Le virgolette indicano caratteri letterali, anche in questo documento. ad esempio, "%ciao" non indica un commento con scritto ciao, ma proprio 
+		  (carattere di percentuale)ciao
+		  
+<token> : indica una cosa user defined, che dev'esserci ma con un nome a scelta. 
+
+.token  : indica un formato dei file con la corrispondente estensione. Le estensioni utilizzate sono descritte nella sezione ((NOME_SEC))
+
+Comunque,nelle stringhe e nei token, anche laddove consentito, è preferibile evitare di usare maiuscole.
+Inoltre, a meno che non porti altre semplificazioni, è preferibile evitare di usare numeri.
+
+
+SEZIONE 1: Formati dei file
+
+Sottosezione 1.1: formatteddata (fdat)
+Il formato specifico principale è il formato formatteddata, con estensione .fdat
+E' composto da una matrice di numeri (righe di double separati da spazi), da commenti (righe che iniziano con "#") e da metadati (riche che iniziano con "#%")
+I metadati hanno la seguente sintassi:
+
+#%<indice>:<stringa senza spazi | numero>
+
+dove però la stringa a destra, a parte appunto non avere spazi (non è però un token perchè può contenere caratteri speciali), 
+deve anche iniziare con una lettera ([A-Za-z]) e non con una cifra.       % Per facilitare la costruzione del parser
+Esempio di file formatteddata:
+
+# Esempi di commenti, la riga inizia con #
+# Esempio di stringhe sbagliate: "1ciao", "come stai"
+# Qui sotto esempi di metadati corretti
+#%MATERIALE:Acciaio
+#%diametro_1:0.03
+#%unita_di_misura:m/s
+1	0.1
+2	0.3
+3	0.2
+4	0.42
+5	3.3e12
+
+Sottosezione 1.2: gnuplotscript (.gnuplotscript)
+Questi sono script di gnuplot, facendo >load <nome file> dentro gnuplot o facendo $ cat <nome file> | gnuplot        % Per far permanere le finestre bisogna usare "gnuplot -p" qui
+verranno eseguiti.
+
+Sottosezione 1.3: templatescript (.templatescript)
+Questi sono script di gnuplot templatizzati, cioè che sono in formato pronto per essere passato dall' "istanziatore di template" (vedi la sezione ((NOME_SEC)) )
+
+Sottosezione 1.4: initialvalue (.initialvalue)
+File leggibili da gnuplot come liste di parametri, con il comando "update" può anche aggiornarli. Controllare in internet comunque
+Sono della forma:
+# commento
+<variabile> = <valore>
+
+Esempio:
+# Velocità del carrello
+velocita = 12.3
+
+Sottosezione 1.5: programmi (.h, .cpp, .sh, .pl, .out)
+Le estensioni dei file del codice sono obbligatorie
+In c++ sono .h per gli header e .cpp per i source
+Per il Perl si usa l'estensione .pl
+Per gli script bash, l'estensione .sh
+Per gli eseguibili nativi non compilati da Eclipse, si usa .out
+
+
+
+
+SEZIONE 2: le cartelle e i file base
+Queste cartelle, ovviamente con questi nomi, sono attese dai programmi che girano nella cartella della relazione
+
+.
+├── temp										% Cartella
+├── src											% Qui vanno i programmi in c++
+├── script										% Qui vanno gli script in linguaggi di scripting, come bash e perl 
+├── risultati									% Qui vanno i risultati generici dei programmi degli utenti, preferibilmente sotto forma di .fdat
+├── latex
+│   ├── <nome_relazione>.tex					% Questo è il file principale, non andrebbe modificato più una volta che si inizia a scrivere il contenuto, che va messo nei file in ./sezioni
+│   ├── tabelle									% Qui vanno le tabelle in .tex
+│   ├── sezioni									% Qui la relazione è separata in varie parti indipendenti
+│   │   ├── pres_dati_tabelle.tex
+│   │   ├── pres_dati_grafici.tex
+│   │   ├── obiettivi.tex
+│   │   ├── metodologia_misura.tex
+│   │   ├── descrizione_app_strumentale.tex		
+│   │   ├── conclusioni.tex
+│   │   └── codice.tex
+│   └── preamboli_e_stili						% Qui vanno i file da includere nel preambolo del latex della relazione
+│       ├── titolo_relazioni_sper1.tex
+│       ├── stili_float.tex
+│       └── pacchetti.tex
+├── gnuplot										% Qui vanno i .templatescript, gli eventuali script .gnuplot singoli, più altri file che possono servire a gnuplot, come .log e .initialvalue
+│   ├── immagini								% Qui vanno i grafici generati da gnuplot, preferibilmente direttmente con tikz e quindi in formato .tex
+│   └── fit										% Qui andranno i risultati delle aanalisi di gnuplot, trasformati in .fdat
+├── dati_grezzi									% Qui vanno messi i dati presi in laboratorio se scritti di fretta senza perdere tempo alla formattazione
+├── dati_formattati								% Qui vanno solo file formattati .fdat, <nome_file>.fdat
+└── altro										% In questa cartella vanno le cose che vanno al di là del semplice scopo della relazione, come questo standard, oppure cose temporaneamente in formati non standard come .ods, backup, e in generale tutti i file che non si sa dove mettere.  
+    └── STANDARD_RELAZIONI.txt
+
+SEZIONE 3: Template
+I template sono file con dentro degli speciali identificatori che un programma si occuperà di sostituire con valori presi da varie fonti.
+Gli identificatori normali (user-defined diciamo) sono nella forma "__token__", che il programma, definito come una funzione da un file di dati e un file di template
+a un file di output, sostituirà nel file di output con un valore trovato o fra i metadati del file di dati corrispondente o fornito (sempre sotto forma di fdat)
+dallo standard input.
+Inlotre ci sono i token speciali, della forma "__@token__", che sono sostituiti dal programma stesso, e spesso riguardano informazioni sui file stessi o altre
+infomazioni generiche.

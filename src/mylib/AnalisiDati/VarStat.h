@@ -18,7 +18,7 @@
 
 #include "../utils/NomeDiFile.h"
 #include "./File_Fdat.h"
-#include "./funzioni_libere.h" //Covarianza
+//#include "./funzioni_libere.h" //Covarianza
 
 #ifdef _MIO_DEBUG_
 
@@ -98,10 +98,10 @@ class VarStat {
 //Campi
 private:
 
+	unsigned long long iNumero_dati = 0;
 	long double dMedia = -INFINITY;
 	//long double dDeviazioneStandardPopo = -INFINITY;
 	long double dErroreMedia = -INFINITY;
-	long iNumero_dati = 0;
 	vector<T> dati;
 	vector<T> errori;
 	long double derivata;
@@ -117,51 +117,61 @@ public:
 	//TOD potcombo
 	//friend const VarStat<T> potcombo(const VarStat<T>& , const long double , const VarStat<T>& , const long double );
 
-	//
-	VarStat(T valore) {
-		iNumero_dati = 1;
-		dMedia = (long double)valore;
-		//long double dDeviazioneStandardPopo = 0;
-		dErroreMedia = 0;
+	//Constexpr autorizza il compilatore a calcolare al compile-time i valori
+	//Per questo devo spostare fuori gli inizializzatori
+	constexpr VarStat(T valore) :
+		iNumero_dati(1),
+		dMedia((long double)valore),
+		dErroreMedia(0),
+		dati(1,valore),
+		errori(1,0),
+		derivata(0)
+	{
+//		iNumero_dati = 1;
+//		dMedia = (long double)valore;
+//		//long double dDeviazioneStandardPopo = 0;
+//		dErroreMedia = 0;
 
-		//Serve svuotarli?
-		if ( !errori.empty() )
-			errori.clear();// Svuota l'array degli errori
-		if ( !dati.empty() )
-			dati.clear();// Svuota l'array dei dati
-
-		//Metti un dato solo com
-		dati.push_back(valore);
-		errori.push_back(0.0);
-
-		//La derivata di un valore puro è come quella di una funzione costante
-		derivata = 0;
+		//Metti un dato solo con errore 0
+//		dati.push_back(valore);
+//		errori.push_back(0.0);
+//
+//		//La derivata di un valore puro è come quella di una funzione costante
+//		derivata = 0;
 	}
 
 	//ATTENZIONE! Se numDati è più d'uno, ricordarsi di passare l'errore dei dati e non quello della media
-	VarStat(T valoreMedio, long double DevStdPop, long numDati = 1) {
-		using std::sqrt;
-		if (DevStdPop < 1e-14)
-			throw "Errore: usato errore nullo";
-		iNumero_dati = numDati;
-		dMedia = (long double)valoreMedio;
-		//dDeviazioneStandardPopo = DevStdPop;
-		dErroreMedia = DevStdPop / sqrt(numDati);
-		if ( !errori.empty() )
-			errori.clear();// Svuota l'array degli errori
-		if ( !dati.empty() )
-			dati.clear();// Svuota l'array dei dati
-
-		//Riempi i dati con copie del valore medio con errore
-		for (int i = 0; i < numDati; ++i) {
-			dati.push_back(valoreMedio);
-			errori.push_back(DevStdPop);
-		}
-
+	constexpr VarStat(T valoreMedio, long double DevStdPop, long numDati = 1) :
+		iNumero_dati(numDati),
+		dMedia((long double)valoreMedio),
+		dErroreMedia(DevStdPop / std::sqrt(numDati)),
+		dati(numDati,valoreMedio), //Fai "numDati" copie di valoreMedio nell'array
+		errori(numDati,0),
+		derivata(1)
+	{
+//		using std::sqrt;
+//		if (DevStdPop < 1e-14)
+//			throw "Errore: usato errore nullo";
+//		iNumero_dati = numDati;
+//		dMedia = (long double)valoreMedio;
+//		//dDeviazioneStandardPopo = DevStdPop;
+//		dErroreMedia = DevStdPop / sqrt(numDati);
+//		if ( !errori.empty() )
+//			errori.clear();// Svuota l'array degli errori
+//		if ( !dati.empty() )
+//			dati.clear();// Svuota l'array dei dati
+//
+//		//Riempi i dati con copie del valore medio con errore
+//		for (int i = 0; i < numDati; ++i) {
+//			dati.push_back(valoreMedio);
+//			errori.push_back(DevStdPop);
+//		}
 
 		//La derivata di un valore solo ma con errore è una variabile x con derivata (d/dx)x = 1
-		derivata = 1;
+		//derivata = 1;
 	}
+
+
 
 	//TODO: Pensarci su
 //	VarStat(mions::utils::NomeDiFile nomeDiFile) {
@@ -360,18 +370,18 @@ public:
 	virtual ~VarStat() = default;//Virtual perchè devono ereditare da questa. Lecito il default? Bè compila
 
 	//Getters
-	inline long double getMedia() const {return dMedia;};
+	constexpr long double getMedia() {return dMedia;};
 	//Scarto Quadratico Medio (N)
-	inline long double getDeviazioneStandardPop() const {return dErroreMedia*std::sqrt(iNumero_dati);};
-	inline long double getVarianzaPopolazione() const {return dErroreMedia*dErroreMedia / (long double)iNumero_dati;};
-	inline long double getDeviazioneStandardCamp() const {return getDeviazioneStandardPop()*sqrt(((long double)iNumero_dati-1)/iNumero_dati);};
-	inline long double getVarianzaCampione() const {return getDeviazioneStandardCamp()*getDeviazioneStandardCamp();};
+	constexpr long double getDeviazioneStandardPop() {return dErroreMedia*std::sqrt(iNumero_dati);};
+	constexpr long double getVarianzaPopolazione() {return dErroreMedia*dErroreMedia / (long double)iNumero_dati;};
+	constexpr long double getDeviazioneStandardCamp() {return getDeviazioneStandardPop()*sqrt(((long double)iNumero_dati-1)/iNumero_dati);};
+	constexpr long double getVarianzaCampione() {return getDeviazioneStandardCamp()*getDeviazioneStandardCamp();};
 	// Errore della media
-	inline long double getErroreMedia() const {return dErroreMedia;}
-	inline long double getDerivata() const {return derivata;}
-	inline long double getEnnesimoDato(long i) const {return dati.at(i);}
-	inline long double getEnnesimoErrore(long i) const {return errori.at(i);}
-	inline long int    getNumeroDatiEffettivo() const {
+	constexpr long double getErroreMedia() {return dErroreMedia;}
+	constexpr long double getDerivata() {return derivata;}
+	constexpr long double getEnnesimoDato(long i) {return dati.at(i);}
+	constexpr long double getEnnesimoErrore(long i) {return errori.at(i);}
+	constexpr long int getNumeroDatiEffettivo() {
 		//Controlla che iNumero_dati sia sempre coerente
 		assert(iNumero_dati == dati.size() and iNumero_dati == errori.size());
 		return iNumero_dati;

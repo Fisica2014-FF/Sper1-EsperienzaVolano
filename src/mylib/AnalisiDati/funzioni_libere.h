@@ -4,7 +4,7 @@
  *  Created on: Apr 4, 2014
  *      Author: francesco
  */
-#include "./VarStat.h"
+#include "VarStat.h"
 
 #ifndef FUNZIONI_LIBERE_H_
 #define FUNZIONI_LIBERE_H_
@@ -15,8 +15,8 @@ namespace dataAnalisi {
 using std::vector;
 
 //Covarianza (non pesata, qualunque cosa voglia dire)
-template <class T>
-T covarianza (VarStat<T>& v1, VarStat<T>& v2) {
+template <typename T>
+T covarianza (VarStat<T> v1, VarStat<T> v2) {
 
 	long long numeroDati = v1.getNumeroDatiEffettivo();
 	//TODO!! se le variabili varstat sono sintetiche??????
