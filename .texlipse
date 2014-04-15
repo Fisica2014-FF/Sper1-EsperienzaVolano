@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Sun Apr 13 12:03:53 CEST 2014
+markTmpDer=true
+builderNum=2
+outputDir=latex/
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=temp
+mainTexFile=volano_piccinin_forcher.tex
+outputFile=volano_piccinin_forcher.pdf
+langSpell=
+markDer=true
+srcDir=latex/

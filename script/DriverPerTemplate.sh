@@ -1,18 +1,26 @@
 #!/bin/bash
 # Script che da n file .fdat e m file di template, produce n*m file generati
-# Primo argomento: cartella dei dati
-# secondo argomento: cartella dei template
-# Terzo argomento. cartella dei risultati
-# Ambedue senza / alla fine!! ./ciao/ = SBAGLIATO, ./ciao = GIUSTO!!!
+# Però modificato per il volano, qua. Ha più senso modificarlo ogni volta alla fine
 
-# Fallo solo per i file della prima pallina, che poi ci includiamo gli altri dello stesso gruppo
-for filedati in ../DatiFormattati/d0{1..7}.fdat
+# Fallo per l'andata
+for filedati in ../dati_formattati/v{0..9}.fdat
 do
-	for template in ../gnuplot/*.templatescript
+	for template in ../gnuplot/*_acc.templatescript
 	do
 		echo "filedati: $filedati"
 		echo "template: $template"
-		echo '' | ./InterfacciaFitGnuplot.pl $filedati $template | gnuplot -p
+		echo '' | ./IstanziaFileDiTemplate.pl $filedati $template | gnuplot -p
+	done
+done
+
+# Fallo per il ritorno
+for filedati in ../dati_formattati/v{0..9}r.fdat
+do
+	for template in ../gnuplot/*_dec.templatescript
+	do
+		echo "filedati: $filedati"
+		echo "template: $template"
+		echo '' | ./IstanziaFileDiTemplate.pl $filedati $template | gnuplot -p
 	done
 done
 exit 0

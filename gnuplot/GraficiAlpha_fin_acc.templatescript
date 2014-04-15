@@ -1,0 +1,24 @@
+set title "Velocità angolare, accelerazione [rad/s]"
+set xlabel "Tempo [s]"
+set ylabel "Velocità angolare [rad/s]"
+
+# This places the key in the bottom left corner, left-justifies the text, tolto->(gives it a title, and draws a box around it in linetype 3):
+set key right bottom Left
+
+f(x) = a + alpha*x
+
+deltaTempi(x) = ( tDelta = x - old_t, old_t = x, tDelta) # Fai la delta dei tempi, preso da http://stackoverflow.com/questions/7249961/can-gnuplot-compute-and-plot-the-delta-between-consecutive-data-points
+old_t = 0
+
+#!cd "../DatiFormattati"
+set fit errorvariables # creates a_err type variables for fitting errors
+
+fit f(x) "<paste __@FILE_DATI__ ../dati_formattati/fandata" using (deltaTempi($1)):($2) via a,alpha
+
+# set print "__@PATH_TEMPLATE__fit/__@NOME_DATI__.initialvalue"
+# print "alpha = ", alpha, 		 "\n"
+# print "alpha_err = ", alpha_err, "\n"
+
+
+plot "<paste __@FILE_DATI__ ../dati_formattati/fandata" using (deltaTempi($1)):($2) title "Dati", \
+f(x) title "Retta interpolante"

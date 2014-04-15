@@ -89,20 +89,20 @@ foreach my $linea (@lines) {
 	#Per ogni caso, una sostituzione appropriata
 	#Qui, i tag speciali, che iniziano con @, vengono sostituiti
 	
-	# Metti le robe dei file di dati in sè
-	$linea =~ s/__\@FILE_DATI__/$ARGV[0]/g;
-	$linea =~ s/__\@PATH_DATI__/$pathd/g;
-	$linea =~ s/__\@NOME_DATI__/$named/g;
-	$linea =~ s/__\@NOMESUFFISSO_DATI__/$nomesuffissod/g;
-	$linea =~ s/__\@PATHNOME_DATI__/$pathnomed/g;
+	# Metti le robe dei file di dati in sè					
+	$linea =~ s/__\@FILE_DATI__/$ARGV[0]/g;					# ./dati/ciao.vader
+	$linea =~ s/__\@PATH_DATI__/$pathd/g;					# ./dati/
+	$linea =~ s/__\@NOME_DATI__/$named/g;					# ciao
+	$linea =~ s/__\@NOMESUFFISSO_DATI__/$nomesuffissod/g;	# ciao.vader
+	$linea =~ s/__\@PATHNOME_DATI__/$pathnomed/g;			# ./dati/ciao/
 	
 	
 	# Metti le robe del file di template
-	$linea =~ s/__\@FILE_TEMPLATE__/$ARGV[1]/g;
-	$linea =~ s/__\@PATH_TEMPLATE__/$patht/g;
-	$linea =~ s/__\@NOME_TEMPLATE__/$namet/g;
-	$linea =~ s/__\@NOMESUFFISSO_TEMPLATE__/$nomesuffissot/g;
-	$linea =~ s/__\@PATHNOME_TEMPLATE__/$pathnomet/g;
+	$linea =~ s/__\@FILE_TEMPLATE__/$ARGV[1]/g;					
+	$linea =~ s/__\@PATH_TEMPLATE__/$patht/g;					
+	$linea =~ s/__\@NOME_TEMPLATE__/$namet/g;					
+	$linea =~ s/__\@NOMESUFFISSO_TEMPLATE__/$nomesuffissot/g;	
+	$linea =~ s/__\@PATHNOME_TEMPLATE__/$pathnomet/g;			
 	
 	
 	# Se la riga contiene un tag, sostituiscilo secondo le regole dello standard					  		  	

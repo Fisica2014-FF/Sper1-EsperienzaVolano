@@ -318,7 +318,7 @@ public:
 		//Salva i dati
 		for (unsigned long i = 0; i < dati.size(); i++) {
 			dati.push_back(aDatiConErrore.at(i).getMedia());
-			errori.push_back(aDatiConErrore.at(i));
+			errori.push_back(aDatiConErrore.at(i).getDeviazioneStandardPop());
 		}
 
 
@@ -439,20 +439,23 @@ public:
 
 		dMedia = dMedia + rhs.dMedia;
 
+		if (iNumero_dati != rhs.iNumero_dati)
+			throw "[Errore]: somma di insiemi di cardinalità diversa";
+
+		for (long long i = 0; i < iNumero_dati; i++) {
+			dati.at(i) = (dati.at(i) + rhs.dati.at(i));
+		}
+
 		// d(x+y)/dx = x', d(x+y)/dy = y'
 		//							  x'          sigmaMx                    y'             sigmaMy
 		//                         vvvvvvvv     vvvvvvvvvv             vvvvvvvvvvvv    vvvvvvvvvvvvvvv
-		dErroreMedia = sqrt( pow( (derivata) * dErroreMedia,2) + pow( (rhs.derivata) * rhs.dErroreMedia,2) /* -2*derivata*rhs.derivata*cov(x,y) ? */ );
+		dErroreMedia = sqrt( pow( (derivata) * dErroreMedia,2) + pow( (rhs.derivata) * rhs.dErroreMedia,2) -2*derivata*rhs.derivata*covarianza(this,rhs) );
 		//Derivata: derivata della somma è somma delle derivate
 		derivata = derivata + rhs.derivata;
 
-		// metti un dato solo, col suo errore
-		iNumero_dati = 1;
-		errori.clear();// Svuota l'array degli errori
-		dati.clear();// Svuota l'array dei dati
-		dati.push_back(dMedia);
-		errori.push_back(getDeviazioneStandardPop());
-
+		for (long long i = 0; i < iNumero_dati; i++) {
+			errori.at(i) = getDeviazioneStandardPop();
+		}
 
 		return *this;
 	}
@@ -518,7 +521,7 @@ public:
 
 
 
-	//TODO: Lo tengo o metto esplicito che la moltiplicazione per scalare è moltiplicazione per costante (con derivata 0)?
+	//Lo tengo o metto esplicito che la moltiplicazione per scalare è moltiplicazione per costante (con derivata 0)?
 	//Moltiplicazione per scalare, compound assignment. v *= d è come v.operator*=(d), quindi le funzioni get, etc qui dentro si riferiscono a v
 	inline VarStat<T>& operator*=(const long double& rhs) {
 		using std::sqrt;

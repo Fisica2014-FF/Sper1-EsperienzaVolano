@@ -1,14 +1,60 @@
+
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+
 % Adatta LaTeX alle convenzioni tipografiche italiane,
 % e ridefinisce alcuni titoli in italiano, come "Capitolo" al posto di "Chapter",
 % se il documento è in italiano
 \usepackage[italian]{babel}
+
+
 \usepackage[utf8]{inputenc} % Consente l'uso caratteri accentati italiani
+
+% Certe cose prese da http://www.latextemplates.com/template/journal-article
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+\usepackage{booktabs} % Horizontal rules in tables
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom
+% captions under/above floats in tables or figures
+
+\usepackage{amsmath} % Package matematico
+
 \usepackage{graphicx}		% Per le immagini
 \usepackage{gnuplot-lua-tikz}
-\usepackage[top=2.5cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+%\usepackage[top=2.5cm, bottom=2cm, left=2cm, right=2cm]{geometry} % Il mio
+% geometry originale
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document
+% margins
+
+
+%--------------------------------------------------------------------------
+% Rinnova i comandi
+
+\usepackage{titlesec} % Allows customization of titles
+\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+\renewcommand\thesubsection{\Roman{subsection}} % Roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
 
 %\nonstopmode %non fermarti agli errori
 
-\usepackage{fancyhdr}
-\setlength{\headheight}{15.2pt}
-\pagestyle{fancy} % Solo le pagine normali, non i titoli nè la pagina iniziale
+%\usepackage{fancyhdr}
+%\setlength{\headheight}{15.2pt}
+%\pagestyle{fancy} % Solo le pagine normali, non i titoli nè la pagina iniziale
+
+
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+	\renewcommand{\sectionmark}[1]{ \markright{#1}{} } % Preso da http://en.wikibooks.org/wiki/LaTeX/Page_Layout#Customizing_with_fancyhdr
+    \fancyhf{}% Resetta la formattazione precedente
+\fancyhead[C]{Forcher, Piccinin - \emph{Volano} $\bullet$ \thesection.\
+\rightmark}
+% Custom header text
+\fancyfoot[L]{\thepage} % Custom footer text
+\fancyfoot[R]{Sec. \thesection} % Custom footer text
