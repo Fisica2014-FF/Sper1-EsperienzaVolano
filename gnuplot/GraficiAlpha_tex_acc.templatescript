@@ -11,19 +11,15 @@ set terminal tikz
 # Metto un underscore all'inizio per indicare che è un file generato
 set output "__@PATH_TEMPLATE__immagini/__@NOME_DATI___grafico.tex"
 
-#!cd "../DatiFormattati"
 set fit errorvariables # creates a_err type variables for fitting errors
 
-deltaTempi(x) = ( tDelta = x - old_t, old_t = x, tDelta) # Fai la delta dei tempi, preso da http://stackoverflow.com/questions/7249961/can-gnuplot-compute-and-plot-the-delta-between-consecutive-data-points
-old_t = 0
-
-fit f(x) "<paste __@FILE_DATI__ ../dati_formattati/fandata" using (deltaTempi($1)):($2) via a,alpha
+fit f(x) "<paste __@FILE_DATI__ ../dati_formattati/fandata" using ($1/2):($2/$1) via a,alpha
 
 set print "__@PATH_TEMPLATE__fit/__@NOME_DATI__.initialvalue"
 print "alpha = ", alpha
 print "alpha_err = ", alpha_err
 
-plot "<paste __@FILE_DATI__ ../dati_formattati/fandata" using (deltaTempi($1)):($2):( 2*3.141*0.1 / (deltaTempi($1)*deltaTempi($1)) ) with yerrorbars title "Dati", \
+plot "<paste __@FILE_DATI__ ../dati_formattati/fandata __@PATHNOME_DATI___err" using ($1/2):($2/$1):($3) with yerrorbars title "Dati", \
 f(x) title "Retta interpolante"
 
 unset output # Flusha i changes, per alcuni files

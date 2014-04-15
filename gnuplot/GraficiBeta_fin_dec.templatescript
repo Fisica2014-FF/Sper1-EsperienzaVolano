@@ -1,4 +1,4 @@
-set title "Velocità angolare, decelerazione [rad/s]"
+set title "Velocità angolare, decelerazione [rad/s] __@NOME_DATI__"
 set xlabel "Tempo [s]"
 set ylabel "Velocità angolare [rad/s]"
 
@@ -7,19 +7,18 @@ set key right bottom Left
 
 f(x) = a + beta*x
 
-#!cd "../DatiFormattati"
+
+
+
+
 set fit errorvariables # creates a_err type variables for fitting errors
 
-delta_tempi(x) = ( tDelta = x - old_t, old_t = x, tDelta) # Fai la delta dei tempi, preso da http://stackoverflow.com/questions/7249961/can-gnuplot-compute-and-plot-the-delta-between-consecutive-data-points
-old_t = 0
-
-
-fit f(x) "<paste __@FILE_DATI__ ../dati_formattati/fritorno" using ($1):($2) via a,beta
+fit f(x) "<paste __@FILE_DATI__ ../dati_formattati/fandata" using ($1/2):($2/$1) via a,beta
 
 # set print "__@PATH_TEMPLATE__fit/__@NOME_DATI__.initialvalue"
 # print "beta = ", alpha, 		 "\n"
 # print "beta_err = ", alpha_err, "\n"
 
 
-plot "<paste __@FILE_DATI__ ../dati_formattati/fritorno " using ($1):($2):( 2*3.141*0.1 / ($1*$1) ) with yerrorbars title "Dati", \
+plot "<paste __@FILE_DATI__ ../dati_formattati/fandata __@PATHNOME_DATI___err" using ($1/2):($2/$1):($3) with yerrorbars title "Dati", \
 f(x) title "Retta interpolante"

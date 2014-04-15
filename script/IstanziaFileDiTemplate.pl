@@ -94,7 +94,7 @@ foreach my $linea (@lines) {
 	$linea =~ s/__\@PATH_DATI__/$pathd/g;					# ./dati/
 	$linea =~ s/__\@NOME_DATI__/$named/g;					# ciao
 	$linea =~ s/__\@NOMESUFFISSO_DATI__/$nomesuffissod/g;	# ciao.vader
-	$linea =~ s/__\@PATHNOME_DATI__/$pathnomed/g;			# ./dati/ciao/
+	$linea =~ s/__\@PATHNOME_DATI__/$pathnomed/g;			# ./dati/ciao
 	
 	
 	# Metti le robe del file di template

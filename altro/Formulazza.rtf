@@ -1,0 +1,86 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf190
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green116\blue0;\red100\green56\blue32;\red196\green26\blue22;
+\red170\green13\blue145;\red92\green38\blue153;\red28\green0\blue207;\red46\green13\blue110;\red38\green71\blue75;
+\red63\green110\blue116;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab529
+\pard\tx529\pardeftab529\pardirnatural
+
+\f0\fs22 \cf2 \CocoaLigature0 //\cf0 \
+\cf2 //  main.cpp\cf0 \
+\cf2 //  Hello world\cf0 \
+\cf2 //\cf0 \
+\cf2 //  Created by Marco  on 27/02/14.\cf0 \
+\cf2 //  Copyright (c) 2014 Marco . All rights reserved.\cf0 \
+\cf2 //\cf0 \
+\
+\cf3 #include \cf4 <iostream>\cf3 \
+#include \cf4 <cmath>\cf3 \
+#include \cf4 <unistd.h>\cf3 \
+\cf5 using\cf0  \cf5 namespace\cf0  \cf6 std\cf0 ;\
+\
+\
+\cf5 const\cf0  \cf5 double\cf0  r=\cf7 0.01895\cf0 , m=\cf7 0.034\cf0 , g=\cf7 9.806\cf0 , s_r=\cf7 0.00001\cf0 , s_g=\cf7 0.001\cf0 , s_m=\cf7 0.0005\cf0 ;\
+\cf5 double\cf0  Momento(\cf5 double\cf0  al, \cf5 double\cf0  be);\
+\cf5 long\cf0  \cf5 double\cf0  Sigma(\cf5 double\cf0  alpha, \cf5 double\cf0  s_alpha, \cf5 double\cf0  beta, \cf5 double\cf0  s_beta);\
+\cf5 void\cf0  huhu();\
+\cf5 void\cf0  haha();\
+\
+\cf5 int\cf0  main(\cf5 int\cf0  argc, \cf5 const\cf0  \cf5 char\cf0  * argv[])\
+\{\
+    \
+    \cf2 //cin alpha beta ed errori\cf0 \
+    \cf5 long\cf0  \cf5 double\cf0  alpha, beta, s_alpha, s_beta,I_0,s_I_0;\
+    \
+    \cf6 cout\cf0 <<\cf4 "---------------------Calcolare il momento d'inerzia----------------------------------------"\cf0 ;\
+    \cf6 cout\cf0 << \cf8 endl\cf0 ;\
+    \
+    \cf6 cout\cf0 << \cf4 "Alpha = "\cf0 ;\
+    \cf6 cin\cf0 >> alpha;\
+    \cf6 cout\cf0 << \cf4 "Errore di alpha = "\cf0 ;\
+    \cf6 cin\cf0 >> s_alpha;\
+    \cf6 cout\cf0 << \cf4 "Beta = "\cf0 ;\
+    \cf6 cin\cf0 >> beta;\
+    \cf6 cout\cf0 << \cf4 "Errore di beta = "\cf0 ;\
+    \cf6 cin\cf0 >> s_beta;\
+    \cf6 cout\cf0 <<\cf4 "Sto calcolando..."\cf0 << \cf8 endl\cf0 ;\
+    \cf6 cout\cf0 << \cf8 endl\cf0 ;\
+    \cf9 huhu\cf0 ();\
+    \cf8 sleep\cf0 (\cf7 5\cf0 );\
+    I_0= \cf9 Momento\cf0 (alpha, beta);\
+    s_I_0= \cf9 Sigma\cf0 (alpha, s_alpha, beta,s_beta);\
+    \cf6 cout\cf0 <<\cf4 "Il momento \'e8 :  "\cf0 << I_0 << \cf4 " \'b1 "\cf0  << s_I_0<< \cf8 endl\cf0 ;\
+    \
+    \
+    \
+    \cf5 return\cf0  \cf7 0\cf0 ;\
+\}\
+\
+\cf5 double\cf0  Momento(\cf5 double\cf0  al, \cf5 double\cf0  be)\{\
+    \cf5 return\cf0  ((\cf10 r\cf0 *\cf10 m\cf0 *\cf10 g\cf0 -\cf10 m\cf0 *al*\cf10 r\cf0 *\cf10 r\cf0 )/(al-be));\
+\}\
+\
+\cf5 long\cf0  \cf5 double\cf0  Sigma(\cf5 double\cf0  alpha, \cf5 double\cf0  s_alpha, \cf5 double\cf0  beta, \cf5 double\cf0  s_beta)\{\
+    \cf5 return\cf0  (\cf8 sqrt\cf0 (       (((\cf10 m\cf0 *\cf10 g\cf0 -\cf7 2\cf0 *\cf10 m\cf0 *alpha*\cf10 r\cf0 )/(alpha-beta))   *   ((\cf10 m\cf0 *\cf10 g\cf0 -\cf7 2\cf0 *\cf10 m\cf0 *alpha*\cf10 r\cf0 )/(alpha-beta))    *\cf10 s_r\cf0 *\cf10 s_r\cf0 ) +\
+                 (((\cf10 r\cf0 *\cf10 g\cf0 -\cf10 r\cf0 *alpha*\cf10 r\cf0 )/(alpha-beta))     *   ((\cf10 r\cf0 *\cf10 g\cf0 -\cf10 r\cf0 *alpha*\cf10 r\cf0 )/(alpha-beta))      *\cf10 s_m\cf0 *\cf10 s_m\cf0 ) +\
+                 (((\cf10 r\cf0 *\cf10 m\cf0 -\cf10 r\cf0 *alpha*\cf10 r\cf0 *\cf10 m\cf0 )/(alpha-beta))   *   ((\cf10 r\cf0 *\cf10 m\cf0 -\cf10 r\cf0 *alpha*\cf10 r\cf0 *\cf10 m\cf0 )/(alpha-beta))    *\cf10 s_g\cf0 *\cf10 s_g\cf0 ) +\
+                 (((\cf10 r\cf0 *\cf10 r\cf0 *\cf10 m\cf0 *beta-\cf10 r\cf0 *\cf10 g\cf0 *\cf10 m\cf0 )/((alpha-beta)*(alpha-beta)))   *   ((\cf10 r\cf0 *\cf10 r\cf0 *\cf10 m\cf0 *beta-\cf10 r\cf0 *\cf10 g\cf0 *\cf10 m\cf0 )/((alpha-beta)*(alpha-beta)))    *s_alpha*s_alpha) +\
+                 (((\cf10 m\cf0 *\cf10 g\cf0 *\cf10 r\cf0 -\cf10 m\cf0 *\cf10 r\cf0 *\cf10 r\cf0 *alpha)/((alpha-beta)*(alpha-beta)))  *   ((\cf10 m\cf0 *\cf10 g\cf0 *\cf10 r\cf0 -\cf10 m\cf0 *\cf10 r\cf0 *\cf10 r\cf0 *alpha)/((alpha-beta)*(alpha-beta)))   *s_beta*s_beta) ));\
+\}\
+\cf5 void\cf0  huhu()\{\
+    \cf8 sleep\cf0 (\cf7 2\cf0 );\
+    \cf6 cout\cf0 <<\cf4 "segmentation fault"\cf0 << \cf8 endl\cf0 ;\
+    \cf6 cout\cf0 << \cf8 endl\cf0 ;\
+    \cf8 sleep\cf0 (\cf7 6\cf0 );\
+    \cf6 cout\cf0 <<\cf4 " o forse no?"\cf0 <<\cf8 endl\cf0 ;\
+    \cf9 haha\cf0 ();\
+    \cf5 return\cf0 ;\
+\}\
+\cf5 void\cf0  haha()\{\
+    \cf8 sleep\cf0 (\cf7 2\cf0 );\
+    \cf6 cout\cf0 <<\cf4 "prova a dire : vai, programma!"\cf0 << \cf8 endl\cf0 ;\
+    \cf6 cout\cf0 << \cf8 endl\cf0 ;\
+    \cf5 return\cf0 ;\
+\}\
+}
